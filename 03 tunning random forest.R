@@ -289,4 +289,26 @@ ghist <- ggplot(data = tble, aes(x = value)) +
 
 ggsave(plot = ghist, filename = './png/graphs/histogram_prob.jpg', units = 'in', width = 9, height = 8, dpi = 300)
 
+# To make the validations -------------------------------------------------
+
+# AUC
+aucs <- read_csv('./rf/run_1/aucs.csv')
+write.csv(aucs, './rf/run_1/aucs.csv', row.names = FALSE)
+
+gauc <- ggplot(data = aucs, aes(y = auc)) + 
+  geom_boxplot() + 
+  labs(x = '', y = 'AUC') + 
+  theme_light() + 
+  theme(axis.title = element_text(face = 'bold'))
+
+ggsave(plot = gauc, filename = './png/graphs/aucs.jpg', units = 'in', width = 7, height = 6, dpi = 300)
+
+# RMSE
+smpl <- read_csv('./data/tbl/fires/crds_fires-values_sample_vars.csv')[,1:3]
+smpl <- as_tibble(cbind(smpl, terra::extract(fnal, smpl[,1:2])))
+smpl <- dplyr::select(smpl, x, y, fire_corona, rfrs_current)
+colnames(smpl) <- c('x', 'y', 'real', 'modelled')
+
+
+
 # Finish ------------------------------------------------------------------
